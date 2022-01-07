@@ -10,6 +10,7 @@
     <Window.Resources>
         <CollectionViewSource x:Key="customerViewSource" d:DesignSource="{d:DesignInstance {x:Type RentACarModel:Customer}, CreateList=True}"/>
         <CollectionViewSource x:Key="carViewSource" d:DesignSource="{d:DesignInstance {x:Type RentACarModel:Car}, CreateList=True}"/>
+        <CollectionViewSource x:Key="carRentOrdersViewSource" Source="{Binding RentOrders, Source={StaticResource carViewSource}}"/>
     </Window.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
@@ -86,7 +87,50 @@
                 </Grid>
             </TabItem>
             <TabItem Header="RentOrders">
-                <Grid Background="#FFE5E5E5"/>
+                <Grid Background="#FFE5E5E5" DataContext="{StaticResource carRentOrdersViewSource}">
+                    <ComboBox x:Name="cmbCustomers" HorizontalAlignment="Left" Margin="49,79,0,0" VerticalAlignment="Top" Width="120" SelectedValue="{Binding ElementName=rentOrdersDataGrid, Path=SelectedItem.CustId, Mode=OneWay}">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock>
+                                <TextBlock.Text>
+                                    <MultiBinding StringFormat="{}{0}-{1}-{2}">
+                                        <Binding Path="FirstName"/>
+                                        <Binding Path="LastName"/>
+                                        <Binding Path="PhoneNumber"/>
+                                        </MultiBinding>
+                                </TextBlock.Text>
+                            </TextBlock>
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                    </ComboBox>
+                    <ComboBox x:Name="cmbCars" HorizontalAlignment="Left" Margin="414,79,0,0" VerticalAlignment="Top" Width="120" SelectedValue="{Binding ElementName=rentOrdersDataGrid, Path=SelectedItem.CarId, Mode=OneWay}">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock>
+                                <TextBlock.Text>
+                                    <MultiBinding StringFormat="{}{0} - {1} - {2}">
+                                        <Binding Path="Model"/>
+                                        <Binding Path="Color"/>
+                                        <Binding Path="PlateNumber"/>
+                                        </MultiBinding>
+                                </TextBlock.Text>
+                            </TextBlock>
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                    </ComboBox>
+                    <TextBlock HorizontalAlignment="Left" Margin="76,58,0,0" TextWrapping="Wrap" Text="Customers" VerticalAlignment="Top"/>
+                    <TextBlock HorizontalAlignment="Left" Margin="462,58,0,0" TextWrapping="Wrap" Text="Cars" VerticalAlignment="Top" RenderTransformOrigin="0.175,0.411"/>
+                    <DataGrid x:Name="rentOrdersDataGrid" AutoGenerateColumns="False" EnableRowVirtualization="True" ItemsSource="{Binding}" RowDetailsVisibilityMode="VisibleWhenSelected" IsSynchronizedWithCurrentItem="True" Margin="49,159,65.2,111">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn x:Name="FirstNameColumn" Binding="{Binding FirstName}" Header="First Name" Width="SizeToHeader"/>
+                            <DataGridTextColumn x:Name="LastNameColumn" Binding="{Binding LastName}" Header="Last Name" Width="SizeToHeader"/>
+                            <DataGridTextColumn x:Name="PhoneNumberColumn" Binding="{Binding PhoneNumber}" Header="Phone Number" Width="SizeToHeader"/>
+                            <DataGridTextColumn x:Name="ModelColumn" Binding="{Binding Model}" Header="Model" Width="SizeToHeader"/>
+                            <DataGridTextColumn x:Name="ColorColumn" Binding="{Binding Color}" Header="Color" Width="SizeToHeader"/>
+                            <DataGridTextColumn x:Name="PlateNumber" Binding="{Binding PlateNumber}" Header="Plate Number" Width="SizeToHeader"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
             </TabItem>
             <TabItem Header="Penalties">
                 <Grid Background="#FFE5E5E5"/>

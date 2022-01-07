@@ -35,6 +35,7 @@ namespace WpfRentACar
         RentACarEntitiesModel ctx = new RentACarEntitiesModel();
         CollectionViewSource customerVSource;
         CollectionViewSource carVSource;
+        CollectionViewSource carRentOrdersVSource;
         public MainWindow()
         {
             InitializeComponent();
@@ -59,6 +60,22 @@ namespace WpfRentACar
             carVSource = ((System.Windows.Data.CollectionViewSource)(this.FindResource("carViewSource")));
             carVSource.Source = ctx.Cars.Local;
             ctx.Cars.Load();
+
+            carRentOrdersVSource = ((System.Windows.Data.CollectionViewSource)(this.FindResource("carRentOrdersViewSource")));
+
+            //customerRentOrdersVSource.Source = ctx.RentOrders.Local;
+            ctx.RentOrders.Load();
+            ctx.Cars.Load();
+
+            cmbCustomers.ItemsSource = ctx.Customers.Local;
+            //cmbCustomers.DisplayMemberPath = "FirstName";
+            cmbCustomers.SelectedValuePath = "CustId";
+
+            cmbCars.ItemsSource = ctx.Cars.Local;
+            //cmbCars.DisplayMemberPath = "Model";
+            cmbCars.SelectedValuePath = "CarId";
+
+            BindDataGrid();
         }
 
 
@@ -86,58 +103,6 @@ namespace WpfRentACar
             carVSource.View.MoveCurrentToNext();
         }
 
-        /*        private void SaveCustomers()
-                {
-                    Customer customer = null;
-                    if (action == ActionState.New)
-                    {
-                        try
-                        {
-                            customer = new Customer()
-                            {
-                                FirstName = firstNameTextBox.Text.Trim(),
-                                LastName = lastNameTextBox.Text.Trim(),
-                                PhoneNumber = phoneNumberTextBox.Text.Trim()
-                            };
-                            ctx.Customers.Add(customer);
-                            customerVSource.View.Refresh();
-                            ctx.SaveChanges();
-                        }
-                        catch (DataException ex)
-                        {
-                            MessageBox.Show(ex.Message);
-                        }
-                    }
-                    else if (action == ActionState.Edit)
-                    {
-                        try
-                        {
-                            customer = (Customer)customerDataGrid.SelectedItem;
-                            customer.FirstName = firstNameTextBox.Text.Trim();
-                            customer.LastName = lastNameTextBox.Text.Trim();
-                            customer.PhoneNumber = phoneNumberTextBox.Text.Trim();
-                            ctx.SaveChanges();
-                        }
-                        catch (DataException ex)
-                        {
-                            MessageBox.Show(ex.Message);
-                        }
-                    }
-                    else if (action == ActionState.Delete)
-                    {
-                        try
-                        {
-                            customer = (Customer)customerDataGrid.SelectedItem;
-                            ctx.Customers.Remove(customer);
-                            ctx.SaveChanges();
-                        }
-                        catch (DataException ex)
-                        {
-                            MessageBox.Show(ex.Message);
-                        }
-                        customerVSource.View.Refresh();
-                    }
-                }*/
         private void SaveCustomer()
         {
             Customer customer = null;
@@ -260,7 +225,7 @@ namespace WpfRentACar
         }
 
 
-        private void gbOperations_Click (object sender, RoutedEventArgs e)
+        private void gbOperations_Click(object sender, RoutedEventArgs e)
         {
             Button SelectedButton = (Button)e.OriginalSource;
             Panel panel = (Panel)SelectedButton.Parent;
@@ -302,9 +267,107 @@ namespace WpfRentACar
                     SaveCar();
                     break;
                 case "RentOrders":
+                    SaveRentOrders();
                     break;
             }
             ReInitialize();
         }
+
+        private void SaveRentOrders()
+        {
+            RentOrder rentOrder = null;
+            if (action == ActionState.New)
+            {
+                try
+                {
+                    Customer customer = (Customer)cmbCustomers.SelectedItem;
+                    Car car = (Car)cmbCars.SelectedItem;
+                    //instantiem Order entity
+                    rentOrder = new RentOrder()
+                    {
+
+                        CustId = customer.CustId,
+                        CarId = car.CarId
+                        
+                    };
+                    //adaugam entitatea nou creata in context
+                    ctx.RentOrders.Add(rentOrder);
+                    //salvam modificarile
+                    ctx.SaveChanges();
+                    BindDataGrid();
+                }
+                catch (DataException ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
+            }
+            else
+           if (action == ActionState.Edit)
+            {
+                dynamic selectedOrder = rentOrdersDataGrid.SelectedItem;
+                try
+                {
+                    int curr_id = selectedOrder.RentOrderId;
+                    var editedOrder = ctx.RentOrders.FirstOrDefault(s => s.RentOrderId == curr_id);
+                    if (editedOrder != null)
+                    {
+                        editedOrder.CustId = Int32.Parse(cmbCustomers.SelectedValue.ToString());
+                        editedOrder.CarId = Convert.ToInt32(cmbCars.SelectedValue.ToString());
+                        //salvam modificarile
+                        ctx.SaveChanges();
+                    }
+                }
+                catch (DataException ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
+                BindDataGrid();
+                // pozitionarea pe item-ul curent
+                carRentOrdersVSource.View.MoveCurrentTo(selectedOrder);
+            }
+            else if (action == ActionState.Delete)
+            {
+                try
+                {
+                    dynamic selectedOrder = rentOrdersDataGrid.SelectedItem;
+                    int curr_id = selectedOrder.RentOrderId;
+                    var deletedOrder = ctx.RentOrders.FirstOrDefault(s => s.RentOrderId == curr_id);
+                    if (deletedOrder != null)
+                    {
+                        ctx.RentOrders.Remove(deletedOrder);
+                        ctx.SaveChanges();
+                        MessageBox.Show("RentOrder Deleted Successfully", "Message");
+                        BindDataGrid();
+                    }
+                }
+                catch (DataException ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
+            }
+        }
+
+        private void BindDataGrid()
+        {
+            var queryOrder = from ord in ctx.RentOrders
+                             join cust in ctx.Customers on ord.CustId equals
+                             cust.CustId
+                             join inv in ctx.Cars on ord.CarId
+                 equals inv.CarId
+                             select new
+                             {
+                                 ord.RentOrderId,
+                                 ord.CarId,
+                                 ord.CustId,
+                                 cust.FirstName,
+                                 cust.LastName,
+                                 cust.PhoneNumber,
+                                 inv.Model,
+                                 inv.Color,
+                                 inv.PlateNumber
+                             };
+            carRentOrdersVSource.Source = queryOrder.ToList();
+        }
+
     }
 }
