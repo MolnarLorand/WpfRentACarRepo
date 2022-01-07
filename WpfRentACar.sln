@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.32002.261
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfRentACar", "WpfRentACar.csproj", "{AC6FB662-52AC-49F3-B869-9077025ECC9B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RentACarModel", "RentACarModel\RentACarModel.csproj", "{38ABFE89-418B-44A3-8154-789E842E3C07}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{AC6FB662-52AC-49F3-B869-9077025ECC9B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AC6FB662-52AC-49F3-B869-9077025ECC9B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AC6FB662-52AC-49F3-B869-9077025ECC9B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AC6FB662-52AC-49F3-B869-9077025ECC9B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{38ABFE89-418B-44A3-8154-789E842E3C07}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{38ABFE89-418B-44A3-8154-789E842E3C07}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{38ABFE89-418B-44A3-8154-789E842E3C07}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{38ABFE89-418B-44A3-8154-789E842E3C07}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {E0EE34D8-784E-47ED-BC14-3CCB3D300E1A}
+	EndGlobalSection
+EndGlobal
