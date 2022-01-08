@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:WpfRentACar"
         xmlns:RentACarModel="clr-namespace:RentACarModel;assembly=RentACarModel" x:Class="WpfRentACar.MainWindow"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800" Loaded="Window_Loaded">
+        Title="MainWindow" Height="450" Width="800" Loaded="Window_Loaded" Background="#FF5A5A5A">
     <Window.Resources>
         <CollectionViewSource x:Key="customerViewSource" d:DesignSource="{d:DesignInstance {x:Type RentACarModel:Customer}, CreateList=True}"/>
         <CollectionViewSource x:Key="carViewSource" d:DesignSource="{d:DesignInstance {x:Type RentACarModel:Car}, CreateList=True}"/>
@@ -14,6 +14,19 @@
         <CollectionViewSource x:Key="customerPenaltiesViewSource" Source="{Binding Penalties, Source={StaticResource customerViewSource}}"/>
         <CollectionViewSource x:Key="penaltyViewSource" d:DesignSource="{d:DesignInstance {x:Type RentACarModel:Penalty}, CreateList=True}"/>
         <CollectionViewSource x:Key="customerRentOrdersViewSource" Source="{Binding RentOrders, Source={StaticResource customerViewSource}}"/>
+        <ControlTemplate x:Key="validationTemplate">
+            <DockPanel>
+                <TextBlock Foreground="Red" FontSize="20">!</TextBlock>
+                <AdornedElementPlaceholder/>
+            </DockPanel>
+        </ControlTemplate>
+        <Style x:Key="textBoxInError" TargetType="{x:Type TextBox}">
+            <Style.Triggers>
+                <Trigger Property="Validation.HasError" Value="true">
+                    <Setter Property="ToolTip" Value="{Binding RelativeSource={x:Static RelativeSource.Self}, Path=(Validation.Errors)/ErrorContent}"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
     </Window.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
@@ -22,7 +35,7 @@
         </Grid.ColumnDefinitions>
         <TabControl x:Name="tbCtrlRentACar" HorizontalAlignment="Left" Height="400" Margin="10,10,0,0" VerticalAlignment="Top" Width="605">
             <TabItem Header="Customers">
-                <Grid Background="#FFE5E5E5" DataContext="{StaticResource customerViewSource}">
+                <Grid Background="#FFD2D6D7" DataContext="{StaticResource customerViewSource}">
                     <Grid x:Name="grid1" VerticalAlignment="Top" Margin="10,234,0,0" HorizontalAlignment="Left" DataContext="{StaticResource customerViewSource}">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
@@ -37,9 +50,9 @@
                         <Label VerticalAlignment="Center" Grid.Row="0" Margin="3" HorizontalAlignment="Left" Grid.Column="0" Content="Cust Id:"/>
                         <TextBox x:Name="custIdTextBox" Width="120" VerticalAlignment="Center" Text="{Binding CustId, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}" Grid.Row="0" Margin="3" Height="23" HorizontalAlignment="Left" Grid.Column="1" IsEnabled="False"/>
                         <Label VerticalAlignment="Center" Grid.Row="1" Margin="3" HorizontalAlignment="Left" Grid.Column="0" Content="First Name:"/>
-                        <TextBox x:Name="firstNameTextBox" Width="120" VerticalAlignment="Center" Text="{Binding FirstName, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}" Grid.Row="1" Margin="3" Height="23" HorizontalAlignment="Left" Grid.Column="1"/>
+                        <TextBox x:Name="firstNameTextBox" Width="120" VerticalAlignment="Center" Text="{Binding FirstName, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}" Grid.Row="1" Margin="3" Height="23" HorizontalAlignment="Left" Grid.Column="1" Validation.ErrorTemplate="{StaticResource validationTemplate}" Style="{StaticResource textBoxInError}"/>
                         <Label VerticalAlignment="Center" Grid.Row="2" Margin="3" HorizontalAlignment="Left" Grid.Column="0" Content="Last Name:"/>
-                        <TextBox x:Name="lastNameTextBox" Width="120" VerticalAlignment="Center" Text="{Binding LastName, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}" Grid.Row="2" Margin="3" Height="23" HorizontalAlignment="Left" Grid.Column="1"/>
+                        <TextBox x:Name="lastNameTextBox" Width="120" VerticalAlignment="Center" Text="{Binding LastName, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}" Grid.Row="2" Margin="3" Height="23" HorizontalAlignment="Left" Grid.Column="1" Validation.ErrorTemplate="{StaticResource validationTemplate}" Style="{StaticResource textBoxInError}"/>
                         <Label VerticalAlignment="Center" Grid.Row="3" Margin="3" HorizontalAlignment="Left" Grid.Column="0" Content="Phone Number:"/>
                         <TextBox x:Name="phoneNumberTextBox" Width="120" VerticalAlignment="Center" Text="{Binding PhoneNumber, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}" Grid.Row="3" Margin="3" Height="23" HorizontalAlignment="Left" Grid.Column="1"/>
                     </Grid>
@@ -51,12 +64,13 @@
                             <DataGridTextColumn x:Name="phoneNumberColumn" Binding="{Binding PhoneNumber}" Header="Phone Number" Width="SizeToHeader"/>
                         </DataGrid.Columns>
                     </DataGrid>
-                    <Button x:Name="btnPrev" Content="Previous" HorizontalAlignment="Left" Margin="0,139,0,0" VerticalAlignment="Top" Width="74" Click="btnPrev_Click"/>
+                    <Button x:Name="btnPrev" Content="Previous" HorizontalAlignment="Left" Margin="10,139,0,0" VerticalAlignment="Top" Width="74" Click="btnPrev_Click"/>
                     <Button x:Name="btnNext" Content="Next" HorizontalAlignment="Left" Margin="319,139,0,0" VerticalAlignment="Top" Width="75" Click="btnNext_Click"/>
+                    <Image HorizontalAlignment="Left" Height="138" Margin="367,224,0,0" VerticalAlignment="Top" Width="174" Source="fundalkkk.jpg"/>
                 </Grid>
             </TabItem>
             <TabItem Header="Cars">
-                <Grid Background="#FFE5E5E5" DataContext="{StaticResource carViewSource}">
+                <Grid Background="#FFD2D6D7" DataContext="{StaticResource carViewSource}">
                     <DataGrid x:Name="carDataGrid" AutoGenerateColumns="False" EnableRowVirtualization="True" ItemsSource="{Binding}" Margin="10,10,189.2,256" RowDetailsVisibilityMode="VisibleWhenSelected">
                         <DataGrid.Columns>
                             <DataGridTextColumn x:Name="carIdColumn" Binding="{Binding CarId}" Header="Car Id" Width="SizeToHeader"/>
@@ -87,10 +101,12 @@
                     </Grid>
                     <Button x:Name="btnPrev1" Content="Previous" HorizontalAlignment="Left" Margin="10,139,0,0" VerticalAlignment="Top" Width="74" Click="btnPrev1_Click"/>
                     <Button x:Name="btnNext1" Content="Next" HorizontalAlignment="Left" Margin="335,139,0,0" VerticalAlignment="Top" Width="75" Click="btnNext1_Click"/>
+                    <Image HorizontalAlignment="Left" Height="138" Margin="367,224,0,0" VerticalAlignment="Top" Width="174" Source="fundalkkk.jpg"/>
+
                 </Grid>
             </TabItem>
             <TabItem Header="RentOrders">
-                <Grid Background="#FFE5E5E5" DataContext="{StaticResource carRentOrdersViewSource}">
+                <Grid Background="#FFD2D6D7" DataContext="{StaticResource carRentOrdersViewSource}">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="11*"/>
                         <ColumnDefinition Width="19*"/>
@@ -127,7 +143,7 @@
                     </ComboBox>
                     <TextBlock HorizontalAlignment="Left" Margin="76,58,0,0" TextWrapping="Wrap" Text="Customers" VerticalAlignment="Top"/>
                     <TextBlock HorizontalAlignment="Left" Margin="242.308,58,0,0" TextWrapping="Wrap" Text="Cars" VerticalAlignment="Top" RenderTransformOrigin="0.175,0.411" Grid.Column="1"/>
-                    <DataGrid x:Name="rentOrdersDataGrid" AutoGenerateColumns="False" EnableRowVirtualization="True" ItemsSource="{Binding}" RowDetailsVisibilityMode="VisibleWhenSelected" IsSynchronizedWithCurrentItem="True" Margin="49,159,65.2,111" Grid.ColumnSpan="2">
+                    <DataGrid x:Name="rentOrdersDataGrid" AutoGenerateColumns="False" EnableRowVirtualization="True" ItemsSource="{Binding}" RowDetailsVisibilityMode="VisibleWhenSelected" IsSynchronizedWithCurrentItem="True" Margin="49,209,65.2,61" Grid.ColumnSpan="2">
                         <DataGrid.Columns>
                             <DataGridTextColumn x:Name="FirstNameColumn" Binding="{Binding FirstName}" Header="First Name" Width="SizeToHeader"/>
                             <DataGridTextColumn x:Name="LastNameColumn" Binding="{Binding LastName}" Header="Last Name" Width="SizeToHeader"/>
@@ -137,20 +153,37 @@
                             <DataGridTextColumn x:Name="PlateNumber" Binding="{Binding PlateNumber}" Header="Plate Number" Width="SizeToHeader"/>
                         </DataGrid.Columns>
                     </DataGrid>
+                    <Image HorizontalAlignment="Left" Height="134" Margin="207,24,0,0" VerticalAlignment="Top" Width="170" Source="fundalkkk.jpg" RenderTransformOrigin="0.655,0.504" Grid.ColumnSpan="2"/>
                 </Grid>
             </TabItem>
-            
+
         </TabControl>
-        <GroupBox x:Name="gbOperations" Button.Click="gbOperations_Click" Header="" HorizontalAlignment="Left" Height="100" Margin="667,59,0,0" VerticalAlignment="Top" Width="100">
+        <GroupBox x:Name="gbOperations" Button.Click="gbOperations_Click" Header="" HorizontalAlignment="Left" Height="71.2" Margin="667,59,0,0" VerticalAlignment="Top" Width="86.8">
             <StackPanel x:Name="spOperations" HorizontalAlignment="Left" Height="100" Margin="0,-10,-12,-12.4" VerticalAlignment="Top" Width="100">
                 <Button x:Name="btnDelete" Content="Delete" HorizontalAlignment="Left"  VerticalAlignment="Top" Width="75" Click="btnDelete_Click"/>
                 <Button x:Name="btnAdd" Content="Add" HorizontalAlignment="Left"  VerticalAlignment="Top" Width="75" Click="btnAdd_Click"/>
                 <Button x:Name="btnEdit" Content="Edit" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Click="btnEdit_Click"/>
             </StackPanel>
         </GroupBox>
-        <GroupBox x:Name="gbActions" Header="" HorizontalAlignment="Left" Height="55" Margin="667,260,0,0" VerticalAlignment="Top" Width="100">
-            <StackPanel x:Name="spActions" HorizontalAlignment="Left" Height="66" Margin="0,-10,-2,0" VerticalAlignment="Top" Width="90">
-                <Button x:Name="btnSave" Content="Save" HorizontalAlignment="Left"  VerticalAlignment="Top" Width="75" Click="btnSave_Click"/>
+        <GroupBox x:Name="gbActions" Header="" HorizontalAlignment="Left" Height="51.4" Margin="667,260,0,0" VerticalAlignment="Top" Width="86.8">
+            <StackPanel x:Name="spActions" HorizontalAlignment="Left" Height="39.6" Margin="0,-10,0,0" VerticalAlignment="Top" Width="75.6">
+                <Button x:Name="btnSave" Content="Save" HorizontalAlignment="Left"  VerticalAlignment="Top" Width="75" Click="btnSave_Click">
+                    <Button.Style>
+                        <Style TargetType="{x:Type Button}">
+                            <Setter Property="IsEnabled" Value="false" />
+                            <Style.Triggers>
+                                <!--Butonul Save va fi inactiv daca exista erori de validare -->
+                                <MultiDataTrigger>
+                                    <MultiDataTrigger.Conditions>
+                                        <Condition Binding="{Binding ElementName=lastNameTextBox, Path=(Validation.HasError)}" Value="false" />
+                                        <Condition Binding="{Binding ElementName=firstNameTextBox, Path=(Validation.HasError)}" Value="false" />
+                                    </MultiDataTrigger.Conditions>
+                                    <Setter Property="IsEnabled" Value="true" />
+                                </MultiDataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                </Button>
                 <Button x:Name="btnCancel" Content="Cancel" HorizontalAlignment="Left"  VerticalAlignment="Top" Width="75" Click="btnCancel_Click"/>
             </StackPanel>
         </GroupBox>
