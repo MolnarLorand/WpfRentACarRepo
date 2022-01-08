@@ -36,6 +36,7 @@ namespace WpfRentACar
         CollectionViewSource customerVSource;
         CollectionViewSource carVSource;
         CollectionViewSource carRentOrdersVSource;
+        CollectionViewSource customerPenaltiesVSource;
         public MainWindow()
         {
             InitializeComponent();
@@ -75,7 +76,12 @@ namespace WpfRentACar
             //cmbCars.DisplayMemberPath = "Model";
             cmbCars.SelectedValuePath = "CarId";
 
+            customerPenaltiesVSource = ((System.Windows.Data.CollectionViewSource)(this.FindResource("customerPenaltiesViewSource")));
+
             BindDataGrid();
+            System.Windows.Data.CollectionViewSource penaltyViewSource = ((System.Windows.Data.CollectionViewSource)(this.FindResource("penaltyViewSource")));
+            // Load data by setting the CollectionViewSource.Source property:
+            // penaltyViewSource.Source = [generic data source]
         }
 
 
@@ -209,6 +215,8 @@ namespace WpfRentACar
             }
         }
 
+       
+
         private void btnAdd_Click(object sender, RoutedEventArgs e)
         {
             action = ActionState.New;
@@ -269,6 +277,7 @@ namespace WpfRentACar
                 case "RentOrders":
                     SaveRentOrders();
                     break;
+
             }
             ReInitialize();
         }
@@ -369,5 +378,14 @@ namespace WpfRentACar
             carRentOrdersVSource.Source = queryOrder.ToList();
         }
 
+        private void btnPrev2_Click(object sender, RoutedEventArgs e)
+        {
+            customerVSource.View.MoveCurrentToPrevious();
+        }
+
+        private void btnNext2_Click(object sender, RoutedEventArgs e)
+        {
+            customerVSource.View.MoveCurrentToNext();
+        }
     }
 }
